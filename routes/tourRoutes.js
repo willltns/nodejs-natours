@@ -4,12 +4,14 @@ const ctrl = require('../controllers/tourCtrl');
 
 const router = express.Router();
 
-router.param('id', ctrl.checkId);
+// router.param('id', ctrl.checkId);
 
 router
   .route('/')
   .get(ctrl.getTours)
-  .post(ctrl.checkBody, ctrl.createTour);
+  .post(ctrl.createTour);
+
+router.route('/top-5-cheap').get(ctrl.aliasTopTours, ctrl.getTours);
 
 router
   .route('/:id')

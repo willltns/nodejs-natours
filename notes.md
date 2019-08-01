@@ -91,3 +91,28 @@ npm -i eslint prettier eslint-config-prettier eslint-plugin-prettier eslint-plug
   }
 }
 ```
+
+## What is Mongoose?
+Mongoose is an Object Data Modeling(ODM) library for MongoDB and Node.js, a layer of abstraction over the regular MongoDB driver, a higher level of abstraction.
+
+Features: schemas to model data and relationships, easy data validation, simple query API, middleware, etc.
+
+Schema: model data, by describing the structure of the data, default values, and validation.
+
+Model: a wrapper for the Schema, providing an interface to the database for CRUD operations.
+
+## Intro to Back-End Architecture.
+
+- Controller: application logic, application implementation, managing req & res, technical aspects, bridge.
+- Model: business logic, how the business works, and business needs. 
+- view: presentation logic
+
+## process.argv
+option
+
+## MongoDB CRUD
+`Mongoose`
+
+`req.query`
+
+`create()`. `find()`. `sort()`. `select()`. `skip()`. `limit()`.
