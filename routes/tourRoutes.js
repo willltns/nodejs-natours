@@ -13,6 +13,10 @@ router
 
 router.route('/top-5-cheap').get(ctrl.aliasTopTours, ctrl.getTours);
 
+router.route('/tour-stats').get(ctrl.getTourStats);
+
+router.route('/monthly-plan/:year').get(ctrl.getMonthlyPlan);
+
 router
   .route('/:id')
   .get(ctrl.getTour)

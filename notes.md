@@ -10,7 +10,7 @@
 ## Handle Req
 `req.body` --middleware--> `app.use(express.json())`
 
-URL Parameters -> `tour/:id` --> `req.params` --> `{ id: '' }`. when optional --> `tour/:id?`
+URL Parameters -> `tour/:id` --> `req.params` --> `{ id: '' }`. optional --> `tour/:id?`
 
 ## Refactoring Routes
 `app.route('').get(handler).post(handler)...` chain
@@ -107,12 +107,60 @@ Model: a wrapper for the Schema, providing an interface to the database for CRUD
 - Model: business logic, how the business works, and business needs. 
 - view: presentation logic
 
+###### fat modal, thin controller.
+
 ## process.argv
 option
 
+
+
 ## MongoDB CRUD
+[MONGODB MANUAL](https://docs.mongodb.com/manual/)
+
 `Mongoose`
 
 `req.query`
 
 `create()`. `find()`. `sort()`. `select()`. `skip()`. `limit()`.
+
+## Aggregation Pipeline
+`$match`. `$group`. `$sort`...
+
+## Virtual Properties
+
+## Document Middleware
+`Schema.pre(...)`. `Schema.post(...)` 'save'. working on `save` & `create`. not working on `update`
+
+`this` -> current document
+
+`next()`
+
+## Query Middleware
+`Schema.pre(...)`. `Schema.post(...)` 'find'
+
+`this` -> current query
+
+## Aggregation Middleware
+`Schema.pre(...)`. `Schema.post(...)` 'aggregate'
+
+`this` -> current aggregate --- `this.pipeline()`
+
+## Data Validation
+validate fields:
+
+required.
+
+- String: maxlength. minlength. enum
+- Number & Date: min. max.
+
+##### custom validator:
+```javascript
+{
+  validate: {
+	validator: function(val) { // val -> current field value
+	  return val < this.price; // this -> only points to current doc on NEW document creation. 
+    },
+    message: '...'
+  }
+}
+```
