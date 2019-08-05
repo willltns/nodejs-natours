@@ -164,3 +164,51 @@ required.
   }
 }
 ```
+
+## Error Handling
+`npm -i ndb --global`
+
+#### operational errors
+Problems that we can predict will happen at some point, so we just need handle them in advance.
+
+#### programming errors
+Bugs that we developers introduce into our code, difficult to find and handle.
+
+#### global error handling middleware
+```javascript
+
+next(err) // pass error to middleware
+
+------------------------------------
+
+// middleware
+app.use((err, req, res, next) => {
+  ...
+})
+
+```
+
+#### Errors Outside Express
+Actually errors should be handled right where they occur.
+
+below are just safety net.
+
+##### promise error. (unhandled exceptions)
+```javascript
+process.on('unhandledRejection', err => {
+  ...
+  
+  server.close(() => {
+	process.exit(1)
+  })
+})
+```
+
+##### uncaught exceptions
+```javascript
+process.on('uncaughtException', err => {
+  ...
+  
+  process.exit(1)
+})
+```

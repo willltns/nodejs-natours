@@ -16,7 +16,24 @@ mongoose
 const app = require('./app');
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
+const server = app.listen(port, () => {
   // eslint-disable-next-line no-console
   console.log(`Server ready on http://localhost:${port}`);
+});
+
+// -------------------------------------------------------
+
+process.on('unhandledRejection', err => {
+  // eslint-disable-next-line no-console
+  console.log(err.name, err.message);
+
+  server.close(() => process.exit(1));
+});
+
+// should be put before where any code is executed
+process.on('uncaughtException', err => {
+  // eslint-disable-next-line no-console
+  console.log(err.name, err.message);
+
+  process.exit(1);
 });
