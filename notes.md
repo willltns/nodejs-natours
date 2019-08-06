@@ -166,7 +166,7 @@ required.
 ```
 
 ## Error Handling
-`npm -i ndb --global`
+debug tool: `npm -i ndb --global`
 
 #### operational errors
 Problems that we can predict will happen at some point, so we just need handle them in advance.
@@ -212,3 +212,13 @@ process.on('uncaughtException', err => {
   process.exit(1)
 })
 ```
+
+## Authentication, Authorization and Security
+
+### password encrypt
+` yarn add bcryptjs `
+
+### login in
+**JWT TOKEN** --> `yarn add jsonwebtoken`
+
+instance methods --> ` schema.methods.func = function(){this}`
