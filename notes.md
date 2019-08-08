@@ -216,9 +216,28 @@ process.on('uncaughtException', err => {
 ## Authentication, Authorization and Security
 
 ### password encrypt
-` yarn add bcryptjs `
+` yarn add bcryptjs ` ------- `.hash()` `.compare()`
 
-### login in
-**JWT TOKEN** --> `yarn add jsonwebtoken`
+### login
+**JWT token** --> `yarn add jsonwebtoken` ------ `.sign()` `.verify()`
 
 instance methods --> ` schema.methods.func = function(){this}`
+
+### Sending JWT via Cookie
+options --> httpOnly. secure
+
+### Brute Force Attack
+request rate limit( `express-rate-limit` ). restrict maximun login attempts.
+
+### DOS
+request rate limit( `express-rate-limit` ). limit body payload size. avoid evil regular expressions.
+
+### NOSQL QUERY INJECTION
+`npm -i express-mongo-sanitize`
+
+use mongoose. always **sanitize user input data**.( `npm -i xss-clean` )
+
+### prevent parameter pollution
+`npm -i hpp` --- queryString --> `?name=abc&name=def`
+
+and more...

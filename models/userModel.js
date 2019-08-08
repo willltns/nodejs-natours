@@ -21,6 +21,11 @@ const userSchema = new mongoose.Schema({
     }
   },
   photo: String,
+  role: {
+    type: String,
+    enum: ['user', 'guide', 'lead-guide', 'admin'],
+    default: 'user'
+  },
   password: {
     type: String,
     required: [true, 'Please provide your password'],
@@ -36,7 +41,19 @@ const userSchema = new mongoose.Schema({
       },
       message: 'Passwords are not the same'
     }
+  },
+  passwordChangedAt: Date,
+  active: {
+    type: Boolean,
+    default: true,
+    select: false
   }
+});
+
+userSchema.pre(/^find/, function(next) {
+  this.find({ active: { $ne: false } });
+
+  next();
 });
 
 userSchema.pre('save', async function(next) {
@@ -49,8 +66,20 @@ userSchema.pre('save', async function(next) {
   next();
 });
 
+userSchema.pre('save', function(next) {
+  if (!this.isModified('password') || this.isNew) return next();
+  this.passwordChangedAt = Date.now();
+
+  next();
+});
+
 userSchema.methods.verifyPsw = async function(candidatePsw, psw) {
   return await bcrypt.compare(candidatePsw, psw);
+};
+
+userSchema.methods.checkPswIfChanged = function(iat) {
+  if (!this.passwordChangedAt) return false;
+  return this.passwordChangedAt.getTime() / 1000 > iat;
 };
 
 const User = mongoose.model('User', userSchema);

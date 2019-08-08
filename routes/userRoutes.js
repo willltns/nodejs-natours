@@ -9,6 +9,10 @@ router.post('/signup', authCtrl.signup);
 
 router.post('/login', authCtrl.login);
 
+router.patch('/updateMyPassword', authCtrl.protect, authCtrl.updateMyPassword);
+router.patch('/updateMe', authCtrl.protect, userCtrl.updateMe);
+router.delete('/deleteMe', authCtrl.protect, userCtrl.deleteMe);
+
 router
   .route('/')
   .get(userCtrl.getUsers)
