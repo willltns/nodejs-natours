@@ -9,9 +9,16 @@ router.post('/signup', authCtrl.signup);
 
 router.post('/login', authCtrl.login);
 
-router.patch('/updateMyPassword', authCtrl.protect, authCtrl.updateMyPassword);
-router.patch('/updateMe', authCtrl.protect, userCtrl.updateMe);
-router.delete('/deleteMe', authCtrl.protect, userCtrl.deleteMe);
+// Protect all routes after this middleware
+router.use(authCtrl.protect);
+
+router.patch('/updateMyPassword', authCtrl.updateMyPassword);
+router.get('/me', userCtrl.getMe, userCtrl.getUser);
+router.patch('/updateMe', userCtrl.updateMe);
+router.delete('/deleteMe', userCtrl.deleteMe);
+
+// restrict access routes after this middleware
+router.use(authCtrl.restrictTo('admin'));
 
 router
   .route('/')
@@ -22,6 +29,6 @@ router
   .route('/:id')
   .get(userCtrl.getUser)
   .patch(userCtrl.updateUser)
-  .delete(userCtrl.deleteUser);
+  .delete(authCtrl.restrictTo('admin'), userCtrl.deleteUser);
 
 module.exports = router;

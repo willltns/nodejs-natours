@@ -1,5 +1,5 @@
 class ApiFeature {
-  constructor(query, { sort, page = 1, limit = 3, fields, ...queryObj }) {
+  constructor(query, { sort, page = 1, limit = 100, fields, ...queryObj }) {
     this.query = query;
     this.sort = sort;
     this.page = page;

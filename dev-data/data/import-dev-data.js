@@ -15,7 +15,7 @@ mongoose
   // eslint-disable-next-line no-console
   .then(() => console.log('database connected!'));
 
-const tours = fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8');
+const tours = fs.readFileSync(`${__dirname}/tours.json`, 'utf-8');
 
 const importData = async () => {
   await Tour.create(JSON.parse(tours));

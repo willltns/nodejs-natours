@@ -1,44 +1,28 @@
 const asyncCatch = require('../utils/asyncCatch');
 const AppError = require('../utils/appError');
 const User = require('../models/userModel');
-
-exports.getUsers = asyncCatch(async (req, res) => {
-  const user = await User.find();
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      user
-    }
-  });
-});
-
-exports.getUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'this route is not yet defined'
-  });
-};
+const factory = require('./handlerFactory');
 
 exports.createUser = (req, res) => {
   res.status(500).json({
     status: 'error',
-    message: 'this route is not yet defined'
+    message: 'this route is not yet defined. please use /signup to create'
   });
 };
 
-exports.updateUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'this route is not yet defined'
-  });
-};
+exports.getUser = factory.getOne(User);
 
-exports.deleteUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'this route is not yet defined'
-  });
+exports.getUsers = factory.getAll(User);
+
+// warning!! DO NOT modify password
+exports.updateUser = factory.updateOne(User);
+
+exports.deleteUser = factory.deleteOne(User);
+
+// inject current user id to req.params middleware
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user._id;
+  next();
 };
 
 exports.updateMe = asyncCatch(async (req, res, next) => {
