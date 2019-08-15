@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
+const Tour = require('./tourModel');
 
-const reviewShcema = new mongoose.Schema({
+const reviewSchema = new mongoose.Schema({
   review: {
     type: String,
     required: [true, 'Review cannot be empty!']
@@ -26,7 +27,7 @@ const reviewShcema = new mongoose.Schema({
   }
 });
 
-reviewShcema.pre(/^find/, function(next) {
+reviewSchema.pre(/^find/, function(next) {
   this.populate({
     path: 'user',
     select: 'name'
@@ -34,6 +35,40 @@ reviewShcema.pre(/^find/, function(next) {
   next();
 });
 
-const Review = mongoose.model('Review', reviewShcema);
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
+
+reviewSchema.statics.calcAvgRatings = async function(tourId) {
+  const stats = await this.aggregate([
+    { $match: { tour: tourId } },
+    {
+      $group: {
+        _id: 'tour',
+        num: { $sum: 1 },
+        avg: { $avg: '$rating' }
+      }
+    }
+  ]);
+
+  await Tour.findByIdAndUpdate(tourId, {
+    ratingsQuantity: stats[0] ? stats[0].num : 0,
+    ratingsAverage: stats[0] ? stats[0].avg : 4.5
+  });
+};
+
+reviewSchema.post('save', function() {
+  this.constructor.calcAvgRatings(this.tour);
+});
+
+reviewSchema.pre(/^findOneAnd/, async function(next) {
+  const review = await this.findOne();
+  this.tourId = review.tour;
+  next();
+});
+
+reviewSchema.post(/^findOneAnd/, async function() {
+  this.model.calcAvgRatings(this.tourId); // if findByIdAndDelete, post cannot get the tourId by self.
+});
+
+const Review = mongoose.model('Review', reviewSchema);
 
 module.exports = Review;

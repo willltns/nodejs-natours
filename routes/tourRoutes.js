@@ -16,6 +16,14 @@ router.route('/top-5-cheap').get(tourCtrl.aliasTopTours, tourCtrl.getTours);
 router.route('/tour-stats').get(tourCtrl.getTourStats);
 
 router
+  .route('/distances/center/:lnglat/unit/:unit')
+  .get(tourCtrl.getToursDistances);
+
+router
+  .route('/tours-within/:distance/center/:lnglat/unit/:unit')
+  .get(tourCtrl.getToursWithin);
+
+router
   .route('/monthly-plan/:year')
   .get(
     authCtrl.protect,

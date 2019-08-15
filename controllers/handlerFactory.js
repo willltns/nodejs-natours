@@ -40,6 +40,7 @@ exports.getAll = Model =>
       .sortQ()
       .paginate();
 
+    // const doc = await query.explain();
     const doc = await query;
 
     res.status(200).json({
