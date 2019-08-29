@@ -26,6 +26,7 @@ exports.getToursDistances = asyncCatch(async (req, res, next) => {
     );
   const multiplier = unit === 'mi' ? 0.000621371 : 0.001;
 
+  // TODO - ERROR
   const distances = await Tour.aggregate([
     {
       $geoNear: {
@@ -33,7 +34,7 @@ exports.getToursDistances = asyncCatch(async (req, res, next) => {
           type: 'Point',
           coordinates: [+lng, +lat]
         },
-        // key: 'startLocation',
+        key: 'startLocation',
         distanceField: 'distance',
         distanceMultiplier: multiplier
       }

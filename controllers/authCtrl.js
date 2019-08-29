@@ -50,18 +50,34 @@ exports.login = asyncCatch(async (req, res, next) => {
   responseWithToken(user._id, 200, res);
 });
 
+exports.logout = (req, res, next) => {
+  res.cookie('jwt', '', {
+    expires: new Date(Date.now() + 2 * 1000),
+    httpOnly: true
+  });
+
+  res.status(200).json({ status: 'success' });
+};
+
 exports.protect = asyncCatch(async (req, res, next) => {
   // 1) check if token exists
+  let token;
   if (
-    !req.headers.authorization ||
-    !req.headers.authorization.startsWith('Bearer')
-  )
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    token = req.headers.authorization.split(' ')[1];
+  } else {
+    token = req.cookies.jwt;
+  }
+
+  if (!token) {
     return next(
       new AppError('You are not logged in, please log in to get access', 401)
     );
+  }
 
   // 2) check if token valid
-  const token = req.headers.authorization.split(' ')[1];
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
   // 3) check if user exists
@@ -76,8 +92,40 @@ exports.protect = asyncCatch(async (req, res, next) => {
 
   // grant access to protected route
   req.user = freshUser;
+  res.locals.user = freshUser;
   next();
 });
+
+// Only for rendered pages, no errors!
+exports.isLoggedIn = async (req, res, next) => {
+  if (req.cookies.jwt) {
+    try {
+      // 1) verify token
+      const decoded = await promisify(jwt.verify)(
+        req.cookies.jwt,
+        process.env.JWT_SECRET
+      );
+      // 2) Check if user still exists
+      const currentUser = await User.findById(decoded.id);
+
+      if (!currentUser) {
+        return next();
+      }
+
+      // 3) Check if user changed password after the token was issued
+      if (currentUser.checkPswIfChanged(decoded.iat)) {
+        return next();
+      }
+
+      // THERE IS A LOGGED IN USER
+      res.locals.user = currentUser;
+      return next();
+    } catch (err) {
+      return next();
+    }
+  }
+  next();
+};
 
 exports.restrictTo = (...roles) => (req, res, next) => {
   if (!roles.includes(req.user.role))
