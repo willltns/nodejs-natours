@@ -15,7 +15,12 @@ router.use(authCtrl.protect);
 
 router.patch('/updateMyPassword', authCtrl.updateMyPassword);
 router.get('/me', userCtrl.getMe, userCtrl.getUser);
-router.patch('/updateMe', userCtrl.updateMe);
+router.patch(
+  '/updateMe',
+  userCtrl.uploadUserPhoto,
+  userCtrl.resizeUserPhoto,
+  userCtrl.updateMe
+);
 router.delete('/deleteMe', userCtrl.deleteMe);
 
 // restrict access routes after this middleware
